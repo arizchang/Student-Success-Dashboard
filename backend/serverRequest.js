@@ -2,7 +2,7 @@ const http = require('http')
 
 //key: 3a672dc3e7a84eb490a11b47a1687683
 http.get(
-	'http://newsapi.org/v2/everything?q=bitcoin&from=2020-09-20&sortBy=publishedAt&apiKey=3a672dc3e7a84eb490a11b47a1687683',
+	'http://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=3a672dc3e7a84eb490a11b47a1687683',
 	(resp) => {
 		let data = ''
 
