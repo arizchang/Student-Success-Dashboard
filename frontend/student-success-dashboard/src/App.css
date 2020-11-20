@@ -1,0 +1,10 @@
+nav {
+  background-color: rgb(196, 240, 214);
+  font-weight: bold;
+  text-align: center;
+  word-spacing: 1cm;
+  font-size: 0.8cm;
+}
+a:hover {
+  background-color: yellow;
+}
