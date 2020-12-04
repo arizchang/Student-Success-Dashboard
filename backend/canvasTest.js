@@ -24,5 +24,44 @@ function getAssignments() {
 		.catch((err) => console.log(err))
 }
 
-getCourses()
+// list enrollments
+function getEnrollments() {
+	axios
+		.get('https://asu.instructure.com/api/v1/users/self/enrollments', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then((res) => console.log(res.data[0].grades))
+		.catch((err) => console.log(err))
+}
+
+// get user
+function getUser() {
+	axios
+		.get('https://asu.instructure.com/api/v1/accounts/63/users', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then((res) => console.log(res.data))
+		.catch((err) => console.log(err))
+}
+
+// get account (which is the ID for the college e.g. Ira A Fulton)
+function getAccount() {
+	axios
+		.get('https://asu.instructure.com/api/v1/accounts/63', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then((res) => console.log(res.data))
+		.catch((err) => console.log(err))
+}
+
+//getCourses()
 //getAssignments()
+getEnrollments()
+//getUser()
+//getAccount()
