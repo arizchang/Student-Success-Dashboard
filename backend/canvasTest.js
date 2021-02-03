@@ -32,7 +32,7 @@ function getEnrollments() {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data[0].grades))
+		.then((res) => console.log(res.data[0]))
 		.catch((err) => console.log(err))
 }
 
