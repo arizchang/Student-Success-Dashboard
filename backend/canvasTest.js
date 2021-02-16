@@ -3,9 +3,9 @@ const token = require('./tokens').token
 
 //Get all courses in the current year and term and return it as a JSON
 function getCurrentCourses() {
-	var term = "Spring";
-	var year = "2021";
-	var current = year.concat(term);
+	var term = 'Spring'
+	var year = '2021'
+	var current = year.concat(term)
 	var myObj
 	var cur = []
 
@@ -16,17 +16,18 @@ function getCurrentCourses() {
 			},
 		})
 		.then((res) => {
-			myObj = res.data;
-			for(var i = 0; i < myObj.length; i++)
-			{
-				if(myObj[i]["course_code"].includes(current) == true){
+			myObj = res.data
+			console.log(myObj.length)
+			for (var i = 0; i < myObj.length; i++) {
+				console.log(myObj[i]['course_code'])
+				if (myObj[i]['course_code'].includes(current) == true) {
 					cur.push(myObj[i])
 				}
 			}
-			//console.log(cur)
-			let json = JSON.stringify(cur);
-			//console.log(json);
-			return json;
+			console.log(cur)
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			return json
 		})
 		.catch((err) => console.log(err))
 }

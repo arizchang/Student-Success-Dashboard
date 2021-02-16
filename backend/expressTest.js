@@ -3,7 +3,9 @@ const axios = require('axios')
 const token = require('./tokens').token
 
 const app = express()
-var name
+var enrollments
+var currentCourses
+var id
 
 // list enrollments
 function getEnrollments() {
@@ -13,14 +15,59 @@ function getEnrollments() {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => (name = res.data[0]))
+		.then((res) => (enrollments = res.data))
 		.catch((err) => console.log(err))
 }
 
-getEnrollments()
-app.get('/', (req, res) => {
-	res.send(name)
-})
+// return json of current courses
+function getCurrentCourses() {
+	var term = 'Spring'
+	var year = '2021'
+	var current = year.concat(term)
+	var myObj
+	var cur = []
+
+	axios
+		.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then((res) => {
+			myObj = res.data
+			console.log(myObj.length)
+			for (var i = 0; i < myObj.length - 13; i++) {
+				console.log(myObj[i]['course_code'])
+				if (myObj[i]['course_code'].includes(current) == true) {
+					cur.push(myObj[i])
+				}
+			}
+			//console.log(cur)
+			currentCourses = cur
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			return json
+		})
+		.catch((err) => console.log(err))
+}
+
+let theJSON = getCurrentCourses()
+console.log(theJSON)
+app.get('/', (req, res) => res.json(currentCourses))
+
+// getEnrollments()
+// console.log(enrollments)
+// // Get all enrollments
+// app.get('/', (req, res) => res.json(enrollments))
+
+// // Get single enrollment
+// app.get('/:id', (req, res) => {
+// 	res.json(
+// 		enrollments.filter(
+// 			(enrollment) => enrollment.id === parseInt(req.params.id)
+// 		)
+// 	)
+// })
 
 const PORT = process.env.PORT || 5000
 
