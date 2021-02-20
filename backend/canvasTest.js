@@ -3,13 +3,32 @@ const token = require('./tokens').token
 
 // gets list of upcoming assignments for a specified class
 function getUpcomingAssignments(courseID) {
+	//Make new array and get the current date
+	var cur = []
+	let date = new Date();
+
+	//Axios call
 	axios
 		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data))
+		//Loop through each assignment in a specfied class in canvas
+		.then((res) => {
+			for(var i = 0; i < res.data.length; i++){
+				//If the due date of the assignment is due later than the users current date, push to array
+				if(res.data[i]['due_at'] > date.toISOString()){
+					cur.push(res.data[i])
+				}
+			}
+			console.log(cur)
+			//Create JSON object from array
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			//Return JSON object
+			return json
+		})
 		.catch((err) => console.log(err))
 }
 
