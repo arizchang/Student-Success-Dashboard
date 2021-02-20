@@ -9,36 +9,41 @@ var currentCourses
 
 // functions to get and clean data from Canvas
 // fills currentCourses JSON
-function getCurrentCourses() {
-	var term = 'Spring'
-	var year = '2021'
+function getCurrentCourses(term, year) {
+	//Set what the current term and year is to a object
 	var current = year.concat(term)
-	var myObj
 	var cur = []
-
-	return axios
+	//Axios call
+	axios
 		.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
 		.then((res) => {
-			myObj = res.data
-			console.log(myObj.length)
-			for (var i = 0; i < myObj.length - 13; i++) {
-				console.log(myObj[i]['course_code'])
-				if (myObj[i]['course_code'].includes(current) == true) {
-					cur.push(myObj[i])
+			//Loop through each class in canvas
+			for (var i = 0; i < res.data.length; i++) {
+				//If a class has been restricted, don't push to the array
+				if(res.data[i]['access_restricted_by_date'] == true){
+					continue;
+				}
+				//If the class code matches with the year and term, push to new array
+				if (res.data[i]['course_code'].includes(current) == true) {
+					cur.push(res.data[i])
 				}
 			}
 			console.log(cur)
-			currentCourses = cur
+			//Create JSON object from array
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			//Return JSON object
+			return json
 		})
 		.catch((err) => console.log(err))
 }
 
 // call above getter functions
-getCurrentCourses()
+getCurrentCourses("Spring", "2021")
 
 // sending JSONs to server
 app.get('/', (req, res) => res.json(currentCourses))

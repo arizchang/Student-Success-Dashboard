@@ -1,14 +1,25 @@
 const axios = require('axios')
 const token = require('./tokens').token
 
+// gets list of upcoming assignments for a specified class
+function getUpcomingAssignments(courseID) {
+	axios
+		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		.then((res) => console.log(res.data))
+		.catch((err) => console.log(err))
+}
+
 //Get all courses in the current year and term and return it as a JSON
-function getCurrentCourses() {
-	var term = 'Spring'
-	var year = '2021'
+function getCurrentCourses(term, year) {
+	//Set what the current term and year is to a object
 	var current = year.concat(term)
-	var myObj
 	var cur = []
 
+	//Axios call
 	axios
 		.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
 			headers: {
@@ -16,17 +27,22 @@ function getCurrentCourses() {
 			},
 		})
 		.then((res) => {
-			myObj = res.data
-			console.log(myObj.length)
-			for (var i = 0; i < myObj.length; i++) {
-				console.log(myObj[i]['course_code'])
-				if (myObj[i]['course_code'].includes(current) == true) {
-					cur.push(myObj[i])
+			//Loop through each class in canvas
+			for (var i = 0; i < res.data.length; i++) {
+				//If a class has been restricted, don't push to the array
+				if(res.data[i]['access_restricted_by_date'] == true){
+					continue;
+				}
+				//If the class code matches with the year and term, push to new array
+				if (res.data[i]['course_code'].includes(current) == true) {
+					cur.push(res.data[i])
 				}
 			}
 			console.log(cur)
+			//Create JSON object from array
 			let json = JSON.stringify(cur)
 			//console.log(json)
+			//Return JSON object
 			return json
 		})
 		.catch((err) => console.log(err))
@@ -43,15 +59,15 @@ function getCourses() {
 		.catch((err) => console.log(err))
 }
 
-// gets list of assignments for CSE 335
-function getAssignments() {
+// gets list of assignments for a specified class
+function getAssignments(courseID) {
 	axios
-		.get('https://asu.instructure.com/api/v1/courses/59145/assignments', {
+		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res))
+		.then((res) => console.log(res.data))
 		.catch((err) => console.log(err))
 }
 
@@ -91,9 +107,10 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
-getCurrentCourses()
+getUpcomingAssignments("79772")
+//getCurrentCourses("Spring", "2021")
 //getCourses()
-//getAssignments()
+//getAssignments("79772")
 //getEnrollments()
 //getUser()
 //getAccount()
