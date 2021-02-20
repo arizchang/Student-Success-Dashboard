@@ -1,6 +1,31 @@
 const axios = require('axios')
 const token = require('./tokens').token
 
+function getAnnouncements(courseID){
+	//Make new array and get the current date
+	var cur = []
+	//Axios call
+	axios
+		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/discussion_topics?only_announcements=true', {
+			headers: {
+				Authorization: `Bearer ${token}`,
+			},
+		})
+		//Loop through each announcment in a specfied class in canvas
+		.then((res) => {
+			for(var i = 0; i < res.data.length; i++){
+				cur.push(res.data[i])
+			}
+			console.log(cur)
+			//Create JSON object from array
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			//Return JSON object
+			return json
+		})
+		.catch((err) => console.log(err))
+}
+
 // gets list of upcoming assignments for a specified class
 function getUpcomingAssignments(courseID) {
 	//Make new array and get the current date
@@ -126,10 +151,11 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
-getUpcomingAssignments("79772")
+getAnnouncements("75138")
+//getUpcomingAssignments("75138")
 //getCurrentCourses("Spring", "2021")
 //getCourses()
-//getAssignments("79772")
+//getAssignments("75138")
 //getEnrollments()
 //getUser()
 //getAccount()
