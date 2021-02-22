@@ -74,7 +74,7 @@ function getCurrentCourses(term, year) {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
-				if(res.data[i]['access_restricted_by_date'] == true){
+				if(res.data[i]['course_code'] === undefined){
 					continue;
 				}
 				//If the class code matches with the year and term, push to new array
@@ -99,7 +99,7 @@ function getCourses() {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res))
+		.then((res) => console.log(res.data))
 		.catch((err) => console.log(err))
 }
 
@@ -152,10 +152,10 @@ function getAccount() {
 }
 
 getAnnouncements("75138")
-//getUpcomingAssignments("75138")
-//getCurrentCourses("Spring", "2021")
-//getCourses()
-//getAssignments("75138")
-//getEnrollments()
-//getUser()
-//getAccount()
+// getUpcomingAssignments("75138")
+// getCurrentCourses("Spring", "2021")
+// getCourses()
+// getAssignments("75138")
+// getEnrollments()
+// getUser()
+// getAccount()

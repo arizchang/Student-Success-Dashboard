@@ -24,7 +24,7 @@ function getCurrentCourses(term, year) {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
-				if(res.data[i]['access_restricted_by_date'] == true){
+				if(res.data[i]['course_code'] === undefined){
 					continue;
 				}
 				//If the class code matches with the year and term, push to new array
