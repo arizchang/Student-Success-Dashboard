@@ -24,26 +24,27 @@ function getCurrentCourses(term, year) {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
-				if(res.data[i]['course_code'] === undefined){
-					continue;
+				if (res.data[i]['course_code'] === undefined) {
+					continue
 				}
 				//If the class code matches with the year and term, push to new array
 				if (res.data[i]['course_code'].includes(current) == true) {
 					cur.push(res.data[i])
 				}
 			}
-			console.log(cur)
+			//console.log(cur)
 			//Create JSON object from array
 			let json = JSON.stringify(cur)
 			//console.log(json)
 			//Return JSON object
-			return json
+			currentCourses = cur
+			//return json
 		})
 		.catch((err) => console.log(err))
 }
 
 // call above getter functions
-getCurrentCourses("Spring", "2021")
+getCurrentCourses('Spring', '2021')
 
 // sending JSONs to server
 app.get('/', (req, res) => res.json(currentCourses))
