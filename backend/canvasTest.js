@@ -1,19 +1,24 @@
 const axios = require('axios')
 const token = require('./tokens').token
 
-function getAnnouncements(courseID){
+function getAnnouncements(courseID) {
 	//Make new array and get the current date
 	var cur = []
 	//Axios call
 	axios
-		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/discussion_topics?only_announcements=true', {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
+		.get(
+			'https://asu.instructure.com/api/v1/courses/' +
+				courseID +
+				'/discussion_topics?only_announcements=true',
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
 		//Loop through each announcment in a specfied class in canvas
 		.then((res) => {
-			for(var i = 0; i < res.data.length; i++){
+			for (var i = 0; i < res.data.length; i++) {
 				cur.push(res.data[i])
 			}
 			console.log(cur)
@@ -30,20 +35,23 @@ function getAnnouncements(courseID){
 function getUpcomingAssignments(courseID) {
 	//Make new array and get the current date
 	var cur = []
-	let date = new Date();
+	let date = new Date()
 
 	//Axios call
 	axios
-		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments', {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
+		.get(
+			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments',
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
 		//Loop through each assignment in a specfied class in canvas
 		.then((res) => {
-			for(var i = 0; i < res.data.length; i++){
+			for (var i = 0; i < res.data.length; i++) {
 				//If the due date of the assignment is due later than the users current date, push to array
-				if(res.data[i]['due_at'] > date.toISOString()){
+				if (res.data[i]['due_at'] > date.toISOString()) {
 					cur.push(res.data[i])
 				}
 			}
@@ -74,8 +82,8 @@ function getCurrentCourses(term, year) {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
-				if(res.data[i]['course_code'] === undefined){
-					continue;
+				if (res.data[i]['course_code'] === undefined) {
+					continue
 				}
 				//If the class code matches with the year and term, push to new array
 				if (res.data[i]['course_code'].includes(current) == true) {
@@ -119,8 +127,8 @@ function getCurrentCalendarData(term, year) {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
-				if(res.data[i]['course_code'] === undefined){
-					continue;
+				if (res.data[i]['course_code'] === undefined) {
+					continue
 				}
 				//If the class code matches with the year and term, push to new array
 				if (res.data[i]['course_code'].includes(current) == true) {
@@ -142,11 +150,14 @@ function getCurrentCalendarData(term, year) {
 // gets list of assignments for a specified class
 function getAssignments(courseID) {
 	axios
-		.get('https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments', {
-			headers: {
-				Authorization: `Bearer ${token}`,
-			},
-		})
+		.get(
+			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments',
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
 		.then((res) => console.log(res.data))
 		.catch((err) => console.log(err))
 }
@@ -187,10 +198,10 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
-// getAnnouncements("75138")
+// getAnnouncements('75138')
 // getUpcomingAssignments("75138")
 // getCurrentCourses("Spring", "2021")
-// getCurrentCalendarData("Spring", "2021")
+// getCurrentCalendarData('Spring', '2021')
 // getCourses()
 // getAssignments("75138")
 // getEnrollments()

@@ -5,7 +5,8 @@ const token = require('./tokens').token
 const app = express()
 
 // JSONs to be filled
-var currentCourses
+var currentCourses = []
+var announcements = []
 
 // functions to get and clean data from Canvas
 // fills currentCourses JSON
@@ -32,22 +33,54 @@ function getCurrentCourses(term, year) {
 					cur.push(res.data[i])
 				}
 			}
-			//console.log(cur)
-			//Create JSON object from array
-			let json = JSON.stringify(cur)
-			//console.log(json)
-			//Return JSON object
-			currentCourses = cur
-			//return json
+			currentCourses.push(cur)
 		})
 		.catch((err) => console.log(err))
 }
 
+// get announcements from a particular course
+function getAnnouncements(courseID) {
+	//Make new array and get the current date
+	var cur = []
+	//Axios call
+	axios
+		.get(
+			'https://asu.instructure.com/api/v1/courses/' +
+				courseID +
+				'/discussion_topics?only_announcements=true',
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
+		//Loop through each announcment in a specfied class in canvas
+		.then((res) => {
+			for (var i = 0; i < res.data.length; i++) {
+				cur.push(res.data[i])
+			}
+			announcements.push(cur)
+		})
+		.catch((err) => console.log(err))
+}
+
+// get announcements from all courses
+function getAllAnnouncements() {
+	console.log(currentCourses.length)
+	for (course in currentCourses) {
+		console.log(course.id)
+		getAnnouncements(course.id)
+	}
+}
+
 // call above getter functions
 getCurrentCourses('Spring', '2021')
+getAnnouncements('75138')
+//getAllAnnouncements()
 
 // sending JSONs to server
 app.get('/', (req, res) => res.json(currentCourses))
+app.get('/announcements', (req, res) => res.json(announcements))
 
 // setting port and starting server
 const PORT = process.env.PORT || 5000
