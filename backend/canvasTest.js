@@ -1,6 +1,38 @@
 const axios = require('axios')
 const token = require('./tokens').token
 
+//Get graded assignments for a class
+function getGrades(courseID){
+	//Make new array and get the current date
+	var cur = []
+	//Axios call
+	axios
+		.get(
+			'https://asu.instructure.com/api/v1/courses/' + courseID + '/students/submissions?per_page=100',
+			{
+				headers: {
+					Authorization: `Bearer ${token}`,
+				},
+			}
+		)
+		//Loop through each assignment in a specfied class in canvas
+		.then((res) => {
+			for (var i = 0; i < res.data.length; i++) {
+				//Check if that assignment has been graded
+				if (res.data[i]['workflow_state'] === 'graded') {
+					cur.push(res.data[i])
+				}
+			}
+			console.log(cur)
+			//Create JSON object from array
+			let json = JSON.stringify(cur)
+			//console.log(json)
+			//Return JSON object
+			return json
+		})
+		.catch((err) => console.log(err))
+}
+
 function getAnnouncements(courseID) {
 	//Make new array and get the current date
 	var cur = []
@@ -198,6 +230,7 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
+// getGrades('75138')
 // getAnnouncements('75138')
 // getUpcomingAssignments("75138")
 // getCurrentCourses("Spring", "2021")
