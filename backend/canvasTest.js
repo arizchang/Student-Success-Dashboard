@@ -39,9 +39,8 @@ function getAnnouncements(courseID) {
 	//Axios call
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/courses/' +
-				courseID +
-				'/discussion_topics?only_announcements=true',
+			'https://asu.instructure.com/api/v1/announcements?context_codes[]=course_' +
+				courseID,
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,

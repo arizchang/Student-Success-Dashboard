@@ -15,7 +15,6 @@ var assignments = []
 function getCurrentCourses(term, year) {
 	//Set what the current term and year is to a object
 	var current = year.concat(term)
-	var cur = []
 	//Axios call
 	axios
 		.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
@@ -32,10 +31,9 @@ function getCurrentCourses(term, year) {
 				}
 				//If the class code matches with the year and term, push to new array
 				if (res.data[i]['course_code'].includes(current) == true) {
-					cur.push(res.data[i])
+					currentCourses.push(res.data[i])
 				}
 			}
-			currentCourses.push(cur)
 		})
 		.catch((err) => console.log(err))
 }
@@ -43,13 +41,11 @@ function getCurrentCourses(term, year) {
 // get announcements from a particular course
 function getAnnouncements(courseID) {
 	//Make new array and get the current date
-	var cur = []
 	//Axios call
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/courses/' +
-				courseID +
-				'/discussion_topics?only_announcements=true',
+			'https://asu.instructure.com/api/v1/announcements?context_codes[]=course_' +
+				courseID,
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -59,9 +55,8 @@ function getAnnouncements(courseID) {
 		//Loop through each announcment in a specfied class in canvas
 		.then((res) => {
 			for (var i = 0; i < res.data.length; i++) {
-				cur.push(res.data[i])
+				announcements.push(res.data[i])
 			}
-			announcements.push(cur)
 		})
 		.catch((err) => console.log(err))
 }
@@ -143,10 +138,19 @@ getCurrentCalendarData('Spring', '2021')
 getUpcomingAssignments('75138')
 
 // sending JSONs to server
+/*
 app.get('/', (req, res) => res.json(currentCourses))
 app.get('/announcements', (req, res) => res.json(announcements))
+<<<<<<< HEAD
 app.get('/calendars', (req, res) => res.json(calendarData))
 app.get('/assignments', (req, res) => res.json(assignments))
+=======
+*/
+
+app.get('/api/courses', (req, res) => res.json(currentCourses))
+app.get('/api/announcements', (req, res) => res.json(announcements))
+
+>>>>>>> 0ae15ac2cdff57918189d07d1a9381ba53011ec7
 
 // setting port and starting server
 const PORT = process.env.PORT || 5000
