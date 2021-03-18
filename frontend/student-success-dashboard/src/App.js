@@ -5,6 +5,8 @@ import React from 'react';
 import './App.css';
 import Courses from './components/courses/courses';
 import Announcements from './components/announcements/announcements';
+import Assignments from './components/assignments/assignments';
+//import Calendars from './components/calendars/calendars';
 
 class App extends React.Component{
     render() {
@@ -20,6 +22,7 @@ class App extends React.Component{
                 </header>
                 <Courses />
                 <Announcements />
+                <Assignments />
                 {
                 /* <div className="navbar-container">
                     <div className='menu-icon'>
