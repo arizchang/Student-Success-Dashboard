@@ -46,7 +46,7 @@ function getAnnouncements(courseID) {
 		.get(
 			'https://asu.instructure.com/api/v1/courses/' +
 				courseID +
-				'/discussion_topics?only_announcements=true',
+				'/discussion_topics?only_announcements=true&per_page=100',
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -113,7 +113,7 @@ function getUpcomingAssignments(courseID) {
 	//Axios call
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments',
+			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments?per_page=100',
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
