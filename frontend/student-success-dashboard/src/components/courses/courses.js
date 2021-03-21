@@ -1,6 +1,6 @@
 import React from 'react';
 import './courses.css';
-
+import { Link } from 'react-router-dom';
 
 class Courses extends React.Component {
   constructor() {
@@ -22,12 +22,17 @@ class Courses extends React.Component {
         <h2>Courses</h2>
         <ul>
             {this.state.courses.map(course => 
-                <li key={course.id}> {course.name} </li>
+                <li key={course.id}> {courseURL(course.id, course.name)} </li>
             )}
         </ul>
       </div>
     );
   }
+}
+
+function courseURL(courseID, courseName){
+  let url = "https://asu.instructure.com/courses/" + courseID;
+  return <a href = {url}>{courseName}</a>
 }
 
 export default Courses;

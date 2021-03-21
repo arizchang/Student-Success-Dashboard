@@ -22,12 +22,22 @@ class Announcements extends React.Component {
         <h2>Announcements</h2>
         <ul>
             {this.state.announcements.map(announcement => 
-                <li key={announcement.id}> {announcement.title} {announcement.message}</li>
+                <li key={announcement.id}> {announcementURL(announcement.url, announcement.title)} <li>{"Posted At: " + announcement.posted_at}</li> {stripHTML(announcement.message)}</li>
             )}
         </ul>
       </div>
     );
   }
+}
+
+function stripHTML(string){
+      let tempDiv = document.createElement("li");
+      tempDiv.innerHTML = string;
+      return tempDiv.textContent || tempDiv.innerText || "";
+}
+
+function announcementURL(announcementURL, announcementName){
+  return <a href = {announcementURL}>{announcementName}</a>
 }
 
 export default Announcements;

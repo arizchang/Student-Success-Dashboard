@@ -57,6 +57,10 @@ function getAnnouncements(courseID) {
 			for (var i = 0; i < res.data.length; i++) {
 				announcements.push(res.data[i])
 			}
+			for(let j = 0; j < announcements.length; j++){
+				let date = new Date(announcements[j]['posted_at'])
+				announcements[j]["posted_at"] = date.toLocaleString()
+			}
 		})
 		.catch((err) => console.log(err))
 }
@@ -122,6 +126,10 @@ function getUpcomingAssignments(courseID) {
 				if (res.data[i]['due_at'] > date.toISOString()) {
 					assignments.push(res.data[i])
 				}
+			}
+			for(let j = 0; j < assignments.length; j++){
+				let date = new Date(assignments[j]['due_at'])
+				assignments[j]["due_at"] = date.toLocaleString()
 			}
 		})
 		.catch((err) => console.log(err))
