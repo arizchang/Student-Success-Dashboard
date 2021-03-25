@@ -3,10 +3,42 @@ const token = require('./tokens').token
 
 const allCourseID = []
 
+//Get all announcements from each class for a user
+async function getAllAnnouncements() {
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	let urls = []
+	let announcements = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses('Spring', '2021')
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i] + '/discussion_topics?only_announcements=true&per_page=100'))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignment in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				for(let j = 0; j < res[i].data.length; j++){
+					announcements.push(res[i].data[j])
+				}
+			}
+			console.log(announcements)
+			return announcements
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 //Get all assignments from each class for a user
 async function getAllAssignments(){
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	//Have a empty array to fill with urls for axios calls & to fill with assignments names & descriptions
 	let urls = []
 	let assignments = []
 	let date = new Date()
@@ -21,7 +53,7 @@ async function getAllAssignments(){
 	axios.all(
 		urls,
 	)
-	//Loop through each assignment in a specfied class in canvas
+	//Loop through each assignments in a specfied class in canvas
 	.then(
 		axios.spread((...res) =>{
 			for(let i = 0; i < courseID.length; i++){
@@ -37,8 +69,6 @@ async function getAllAssignments(){
 	)
 	.catch((err) => console.log(err))
 }
-
-getAllAssignments()
 
 //Get graded assignments for a class
 function getGrades(courseID){
@@ -271,12 +301,12 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
+// getAllAnnouncements()
+// getAllAssignments()
 // getGrades('75138')
 // getAnnouncements('75138')
 // getUpcomingAssignments("75138")
 // getCurrentCourses("Spring", "2021")
-//console.log(allCourseID)
-// runAllAssignments()
 // getCurrentCalendarData('Spring', '2021')
 // getCourses()
 // getAssignments("75138")
