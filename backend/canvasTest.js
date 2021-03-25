@@ -3,6 +3,40 @@ const token = require('./tokens').token
 
 const allCourseID = []
 
+//Get all graded assignments from each class for a user
+async function getAllGrades() {
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	let urls = []
+	let grades = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses('Spring', '2021')
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i] + '/students/submissions?per_page=100'))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignment in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				for(let j = 0; j < res[i].data.length; j++){
+					if(res[i].data[j]['workflow_state'] === 'graded'){
+						grades.push(res[i].data[j])
+					}
+				}
+			}
+			console.log(grades)
+			return grades
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 //Get all announcements from each class for a user
 async function getAllAnnouncements() {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -192,7 +226,7 @@ function getCurrentCourses(term, year) {
 					cur.push(res.data[i])
 				}
 			}
-			//console.log(cur)
+			console.log(cur)
 			//Create JSON object from array
 			let json = JSON.stringify(cur)
 			// console.log(json)
@@ -301,6 +335,7 @@ function getAccount() {
 		.catch((err) => console.log(err))
 }
 
+// getAllGrades()
 // getAllAnnouncements()
 // getAllAssignments()
 // getGrades('75138')
@@ -310,6 +345,6 @@ function getAccount() {
 // getCurrentCalendarData('Spring', '2021')
 // getCourses()
 // getAssignments("75138")
-// getEnrollments()
+ getEnrollments()
 // getUser()
 // getAccount()
