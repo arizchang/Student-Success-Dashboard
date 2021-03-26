@@ -251,10 +251,11 @@ function getCourses() {
 		.catch((err) => console.log(err))
 }
 
-function getCurrentCalendarData(term, year) {
+async function getCurrentCalendarData(term, year) {
 	//Set what the current term and year is to a object
 	var current = year.concat(term)
 	var calendars = []
+	const courses = await getCurrentCourses(term, year)
 
 	//Axios call
 	axios
@@ -266,12 +267,8 @@ function getCurrentCalendarData(term, year) {
 		.then((res) => {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
-				//If a class has been restricted, don't push to the array
-				if (res.data[i]['course_code'] === undefined) {
-					continue
-				}
 				//If the class code matches with the year and term, push to new array
-				if (res.data[i]['course_code'].includes(current) == true) {
+				if (courses.some((courseid) => courseid == res.data[i]['id'])) {
 					if (res.data[i]['calendar'] !== undefined) {
 						calendars.push(res.data[i]['calendar']['ics'])
 					}
