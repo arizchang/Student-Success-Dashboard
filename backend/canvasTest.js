@@ -201,11 +201,12 @@ function getUpcomingAssignments(courseID) {
 }
 
 //Get all courses in the current year and term and return it as a JSON
-function getCurrentCourses(term, year) {
+async function getCurrentCourses(term, year) {
 	//Set what the current term and year is to a object
 	var current = year.concat(term)
 	var cur = []
-
+	const studentEnrolled = await getEnrollments() 
+	//console.log(studentEnrolled)
 	//Axios call
 	axios
 		return axios.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
@@ -215,23 +216,25 @@ function getCurrentCourses(term, year) {
 		})
 		.then((res) => {
 			//Loop through each class in canvas
+			//console.log(res.data.length)
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
 				if (res.data[i]['course_code'] === undefined) {
 					continue
-				}
-				//If the class code matches with the year and term, push to new array
-				if (res.data[i]['course_code'].includes(current) == true) {
-					allCourseID.push(res.data[i]["id"])
-					cur.push(res.data[i])
+				}		
+				for(let j = 0; j < studentEnrolled.length; j++){
+					if(res.data[i]['id'] == studentEnrolled[j]['course_id']){
+						if(studentEnrolled[j]['role'] == 'StudentEnrollment'){
+							//If the class code matches with the year and term, push to new array
+							if (res.data[i]['course_code'].includes(current) == true) {
+								allCourseID.push(res.data[i]["id"])
+								cur.push(res.data[i])
+							}
+						}
+					}
 				}
 			}
-			console.log(cur)
-			//Create JSON object from array
-			let json = JSON.stringify(cur)
-			// console.log(json)
-			//Return JSON object
-			//console.log(allCourseID)
+			console.log(allCourseID)
 			return allCourseID
 		})
 		.catch((err) => console.log(err))
@@ -300,14 +303,32 @@ function getAssignments(courseID) {
 }
 
 // list enrollments
-function getEnrollments() {
+async function getEnrollments() {
+	let enrollment = []
 	axios
-		.get('https://asu.instructure.com/api/v1/users/self/enrollments', {
+		return axios.get('https://asu.instructure.com/api/v1/users/self/enrollments?per_page=100', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data[0]))
+		.then((res) => {
+			//console.log(res.data)
+			for(let i = 0; i < res.data.length; i++){
+				let noDups = false
+				//console.log(i)
+				for(let j = i+1; j < res.data.length; j++){
+					if(res.data[i]['course_id'] == res.data[j]['course_id']){
+						noDups = true
+						//console.log("Return true" + res.data[i]['course_id'])
+					}
+				}
+				if(noDups == false){
+					enrollment.push(res.data[i])
+				}
+			}
+			//console.log(enrollment.length)
+			return enrollment
+		})
 		.catch((err) => console.log(err))
 }
 
@@ -326,12 +347,13 @@ function getUser() {
 // get account (which is the ID for the college e.g. Ira A Fulton)
 function getAccount() {
 	axios
-		.get('https://asu.instructure.com/api/v1/accounts/63', {
+		return axios.get('https://asu.instructure.com/api/v1/users/self', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data))
+		.then((res) => {console.log(res.data)
+		})
 		.catch((err) => console.log(err))
 }
 
@@ -345,6 +367,6 @@ function getAccount() {
 // getCurrentCalendarData('Spring', '2021')
 // getCourses()
 // getAssignments("75138")
- getEnrollments()
+// getEnrollments()
 // getUser()
 // getAccount()
