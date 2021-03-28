@@ -1,23 +1,39 @@
 import React, { Component } from 'react'
 import ClassGrade from '../../components/classGrade/classGrade'
 import Announcements from '../../components/announcements/announcements'
-import {requestCourses} from '../../api/api'
+import * as api from '../../api/api'
 import './home.css'
 
 export class home extends Component {
+  constructor(props){
+    super(props);
+    this.state = {
+      courses: null,
+      Announcements: null
+
+    }
+  }
+
   componentDidMount(){
-    requestCourses().then(res=>{
-      console.log(res)
+    api.requestCourses().then(res=>{
+      this.setState({
+        courses: res.data
+      })
+    })
+    api.requestAnnouncements().then(res=>{
+      this.setState({
+        Announcements: res.data
+      })
     })
   }
   render() {
     return (
       <div>
-        <ClassGrade />
-        <ClassGrade />
-        <ClassGrade />
+        {
+          this.state.courses && this.state.courses.map(item=> <ClassGrade data={item} />)
+        }
 
-        <Announcements />
+        <Announcements announcements={this.state.Announcements} />
 
         <div className="GPA_group">
           <div className="current">Current GPA: 2.0</div>

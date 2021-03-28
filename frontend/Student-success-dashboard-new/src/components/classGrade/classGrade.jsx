@@ -2,11 +2,16 @@ import React, { Component } from 'react'
 import './classGrade.css'
 
 export class classGrade extends Component {
+
+  constructor(props){
+    super(props);
+
+  }
   render() {
     return (
       <div className="class_grade">
           <div className="title">
-            CSE 230 - Computer Org/Assemb Lang Prog
+            {this.props.data && this.props.data.name}
           </div>
           <div className="des">
             <div className="grade">
