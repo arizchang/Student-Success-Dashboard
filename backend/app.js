@@ -143,23 +143,16 @@ getCurrentCalendarData('Spring', '2021')
 getUpcomingAssignments('75138')
 
 // sending JSONs to server
-<<<<<<< HEAD
 /*
 app.get('/', (req, res) => res.json(currentCourses))
 app.get('/announcements', (req, res) => res.json(announcements))
 */
 
-=======
->>>>>>> 1d3183e75cdaac28cb2b7e54ac81db6e42da0a4f
 app.get('/api/courses', (req, res) => res.json(currentCourses))
 app.get('/api/announcements', (req, res) => res.json(announcements))
 app.get('/api/assignments', (req,res) => res.json(assignments))
 app.get('/api/calendars', (req,res) => res.json(calendarData))
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1d3183e75cdaac28cb2b7e54ac81db6e42da0a4f
 // setting port and starting server
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
