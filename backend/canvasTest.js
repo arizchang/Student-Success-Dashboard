@@ -1,6 +1,109 @@
 const axios = require('axios')
 const token = require('./tokens').token
 
+const allCourseID = []
+
+//Get all graded assignments from each class for a user
+async function getAllGrades() {
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	let urls = []
+	let grades = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses('Spring', '2021')
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i] + '/students/submissions?per_page=100'))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignment in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				for(let j = 0; j < res[i].data.length; j++){
+					if(res[i].data[j]['workflow_state'] === 'graded'){
+						grades.push(res[i].data[j])
+					}
+				}
+			}
+			console.log(grades)
+			return grades
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
+//Get all announcements from each class for a user
+async function getAllAnnouncements() {
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	let urls = []
+	let announcements = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses('Spring', '2021')
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i] + '/discussion_topics?only_announcements=true&per_page=100'))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignment in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				for(let j = 0; j < res[i].data.length; j++){
+					announcements.push(res[i].data[j])
+				}
+			}
+			console.log(announcements)
+			return announcements
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
+//Get all assignments from each class for a user
+async function getAllAssignments(){
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignments names & descriptions
+	let urls = []
+	let assignments = []
+	let date = new Date()
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses('Spring', '2021')
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + allCourseID[i] + '/assignments?per_page=100'))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignments in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				for(let j = 0; j < res[i].data.length; j++){
+					if(res[i].data[j]['due_at'] > date.toISOString()){
+						assignments.push(res[i].data[j])
+					}
+				}
+			}
+			console.log(assignments)
+			return assignments
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 //Get graded assignments for a class
 function getGrades(courseID){
 	//Make new array and get the current date
@@ -39,8 +142,9 @@ function getAnnouncements(courseID) {
 	//Axios call
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/announcements?context_codes[]=course_' +
-				courseID,
+			'https://asu.instructure.com/api/v1/courses/' +
+				courseID +
+				'/discussion_topics?only_announcements=true',
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -97,36 +201,41 @@ function getUpcomingAssignments(courseID) {
 }
 
 //Get all courses in the current year and term and return it as a JSON
-function getCurrentCourses(term, year) {
+async function getCurrentCourses(term, year) {
 	//Set what the current term and year is to a object
 	var current = year.concat(term)
 	var cur = []
-
+	const studentEnrolled = await getEnrollments() 
+	//console.log(studentEnrolled)
 	//Axios call
 	axios
-		.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
+		return axios.get('https://asu.instructure.com/api/v1/courses?per_page=100', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
 		.then((res) => {
 			//Loop through each class in canvas
+			//console.log(res.data.length)
 			for (var i = 0; i < res.data.length; i++) {
 				//If a class has been restricted, don't push to the array
 				if (res.data[i]['course_code'] === undefined) {
 					continue
-				}
-				//If the class code matches with the year and term, push to new array
-				if (res.data[i]['course_code'].includes(current) == true) {
-					cur.push(res.data[i])
+				}		
+				for(let j = 0; j < studentEnrolled.length; j++){
+					if(res.data[i]['id'] == studentEnrolled[j]['course_id']){
+						if(studentEnrolled[j]['role'] == 'StudentEnrollment'){
+							//If the class code matches with the year and term, push to new array
+							if (res.data[i]['course_code'].includes(current) == true) {
+								allCourseID.push(res.data[i]["id"])
+								cur.push(res.data[i])
+							}
+						}
+					}
 				}
 			}
-			console.log(cur)
-			//Create JSON object from array
-			let json = JSON.stringify(cur)
-			// console.log(json)
-			//Return JSON object
-			return json
+			console.log(allCourseID)
+			return allCourseID
 		})
 		.catch((err) => console.log(err))
 }
@@ -142,10 +251,11 @@ function getCourses() {
 		.catch((err) => console.log(err))
 }
 
-function getCurrentCalendarData(term, year) {
+async function getCurrentCalendarData(term, year) {
 	//Set what the current term and year is to a object
 	var current = year.concat(term)
 	var calendars = []
+	const courses = await getCurrentCourses(term, year)
 
 	//Axios call
 	axios
@@ -157,12 +267,8 @@ function getCurrentCalendarData(term, year) {
 		.then((res) => {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
-				//If a class has been restricted, don't push to the array
-				if (res.data[i]['course_code'] === undefined) {
-					continue
-				}
 				//If the class code matches with the year and term, push to new array
-				if (res.data[i]['course_code'].includes(current) == true) {
+				if (courses.some((courseid) => courseid == res.data[i]['id'])) {
 					if (res.data[i]['calendar'] !== undefined) {
 						calendars.push(res.data[i]['calendar']['ics'])
 					}
@@ -182,7 +288,7 @@ function getCurrentCalendarData(term, year) {
 function getAssignments(courseID) {
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments',
+			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments?per_page=100',
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -194,14 +300,32 @@ function getAssignments(courseID) {
 }
 
 // list enrollments
-function getEnrollments() {
+async function getEnrollments() {
+	let enrollment = []
 	axios
-		.get('https://asu.instructure.com/api/v1/users/self/enrollments', {
+		return axios.get('https://asu.instructure.com/api/v1/users/self/enrollments?per_page=100', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data[0]))
+		.then((res) => {
+			//console.log(res.data)
+			for(let i = 0; i < res.data.length; i++){
+				let noDups = false
+				//console.log(i)
+				for(let j = i+1; j < res.data.length; j++){
+					if(res.data[i]['course_id'] == res.data[j]['course_id']){
+						noDups = true
+						//console.log("Return true" + res.data[i]['course_id'])
+					}
+				}
+				if(noDups == false){
+					enrollment.push(res.data[i])
+				}
+			}
+			//console.log(enrollment.length)
+			return enrollment
+		})
 		.catch((err) => console.log(err))
 }
 
@@ -220,15 +344,19 @@ function getUser() {
 // get account (which is the ID for the college e.g. Ira A Fulton)
 function getAccount() {
 	axios
-		.get('https://asu.instructure.com/api/v1/accounts/63', {
+		return axios.get('https://asu.instructure.com/api/v1/users/self', {
 			headers: {
 				Authorization: `Bearer ${token}`,
 			},
 		})
-		.then((res) => console.log(res.data))
+		.then((res) => {console.log(res.data)
+		})
 		.catch((err) => console.log(err))
 }
 
+// getAllGrades()
+// getAllAnnouncements()
+// getAllAssignments()
 // getGrades('75138')
 // getAnnouncements('75138')
 // getUpcomingAssignments("75138")
