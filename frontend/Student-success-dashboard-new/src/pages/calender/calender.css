@@ -1,0 +1,26 @@
+table{
+  width:100%;
+}
+table th,table td{
+  border: none !important;
+  padding: 10px 20px !important;
+  outline: 1px solid gray;
+  /* border: 1px solid black; */
+  text-align:center;
+}
+
+.color_note {
+  margin: 50px auto !important;
+  width: 800px;
+  border: 1px solid #f0f0f0;
+  border-radius: 2px;
+}
+
+.color_note table td{
+  padding: 0px !important;
+}
+
+.color_note .color{
+  height: 30px;
+  background-color: skyblue;
+}

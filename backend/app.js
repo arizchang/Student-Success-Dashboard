@@ -145,6 +145,11 @@ getCurrentCalendarData('Spring', '2021')
 getUpcomingAssignments('75138')
 
 // sending JSONs to server
+/*
+app.get('/', (req, res) => res.json(currentCourses))
+app.get('/announcements', (req, res) => res.json(announcements))
+*/
+
 app.get('/api/courses', (req, res) => res.json(currentCourses))
 app.get('/api/announcements', (req, res) => res.json(announcements))
 app.get('/api/assignments', (req, res) => res.json(assignments))
