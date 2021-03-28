@@ -141,16 +141,10 @@ getUpcomingAssignments('75138')
 /*
 app.get('/', (req, res) => res.json(currentCourses))
 app.get('/announcements', (req, res) => res.json(announcements))
-<<<<<<< HEAD
-app.get('/calendars', (req, res) => res.json(calendarData))
-app.get('/assignments', (req, res) => res.json(assignments))
-=======
 */
 
 app.get('/api/courses', (req, res) => res.json(currentCourses))
 app.get('/api/announcements', (req, res) => res.json(announcements))
-
->>>>>>> 0ae15ac2cdff57918189d07d1a9381ba53011ec7
 
 // setting port and starting server
 const PORT = process.env.PORT || 5000
