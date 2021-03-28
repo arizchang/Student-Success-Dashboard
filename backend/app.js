@@ -58,9 +58,9 @@ function getAnnouncements(courseID) {
 			for (var i = 0; i < res.data.length; i++) {
 				announcements.push(res.data[i])
 			}
-			for(let j = 0; j < announcements.length; j++){
+			for (let j = 0; j < announcements.length; j++) {
 				let date = new Date(announcements[j]['posted_at'])
-				announcements[j]["posted_at"] = date.toLocaleString()
+				announcements[j]['posted_at'] = date.toLocaleString()
 			}
 		})
 		.catch((err) => console.log(err))
@@ -113,7 +113,9 @@ function getUpcomingAssignments(courseID) {
 	//Axios call
 	axios
 		.get(
-			'https://asu.instructure.com/api/v1/courses/' + courseID + '/assignments?per_page=100',
+			'https://asu.instructure.com/api/v1/courses/' +
+				courseID +
+				'/assignments?per_page=100',
 			{
 				headers: {
 					Authorization: `Bearer ${token}`,
@@ -128,9 +130,9 @@ function getUpcomingAssignments(courseID) {
 					assignments.push(res.data[i])
 				}
 			}
-			for(let j = 0; j < assignments.length; j++){
+			for (let j = 0; j < assignments.length; j++) {
 				let date = new Date(assignments[j]['due_at'])
-				assignments[j]["due_at"] = date.toLocaleString()
+				assignments[j]['due_at'] = date.toLocaleString()
 			}
 		})
 		.catch((err) => console.log(err))
@@ -143,23 +145,11 @@ getCurrentCalendarData('Spring', '2021')
 getUpcomingAssignments('75138')
 
 // sending JSONs to server
-<<<<<<< HEAD
-/*
-app.get('/', (req, res) => res.json(currentCourses))
-app.get('/announcements', (req, res) => res.json(announcements))
-*/
-
-=======
->>>>>>> 1d3183e75cdaac28cb2b7e54ac81db6e42da0a4f
 app.get('/api/courses', (req, res) => res.json(currentCourses))
 app.get('/api/announcements', (req, res) => res.json(announcements))
-app.get('/api/assignments', (req,res) => res.json(assignments))
-app.get('/api/calendars', (req,res) => res.json(calendarData))
+app.get('/api/assignments', (req, res) => res.json(assignments))
+app.get('/api/calendars', (req, res) => res.json(calendarData))
 
-<<<<<<< HEAD
-=======
-
->>>>>>> 1d3183e75cdaac28cb2b7e54ac81db6e42da0a4f
 // setting port and starting server
 const PORT = process.env.PORT || 5000
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))
