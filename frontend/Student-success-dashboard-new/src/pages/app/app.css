@@ -1,0 +1,35 @@
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+a {
+  color: #333;
+  text-decoration: none;
+}
+.APP{
+  overflow: hidden;
+}
+
+
+.App-header {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height: 60px;
+  background-color: rgba(250, 205, 145, 1);
+}
+
+.App-header a{
+  padding: 0 20px;
+}
+.App-header a:hover,.App-header a.active{
+  color: #5f9bd5;
+  text-decoration: underline;
+}
+
+.container{
+  width: 980px;
+  margin: 0 auto;
+}

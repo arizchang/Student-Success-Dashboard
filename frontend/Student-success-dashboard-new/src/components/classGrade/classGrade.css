@@ -1,0 +1,20 @@
+.class_grade{
+  background-color: #f2f2f2;
+  font-size: 12px;
+}
+
+.class_grade .title{
+  height:40px;
+  text-align:center;
+  line-height: 40px;
+  background-color: #333333;
+  color: #fff;
+}
+.class_grade .des{
+  padding: 15px;
+  display:flex;
+}
+
+.class_grade .des > div{
+  flex: 1
+}
