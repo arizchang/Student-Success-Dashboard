@@ -1,6 +1,7 @@
 const express = require('express')
 const axios = require('axios')
 const token = require('./tokens').token
+const client_id = require('./tokens').client_id
 
 const app = express()
 var enrollments
@@ -37,7 +38,7 @@ function getCurrentCourses() {
 			myObj = res.data
 			console.log(myObj.length)
 			for (var i = 0; i < myObj.length - 13; i++) {
-				console.log(myObj[i]['course_code'])
+				//console.log(myObj[i]['course_code'])
 				if (myObj[i]['course_code'].includes(current) == true) {
 					cur.push(myObj[i])
 				}
@@ -52,8 +53,15 @@ function getCurrentCourses() {
 }
 
 let theJSON = getCurrentCourses()
-console.log(theJSON)
+//console.log(theJSON)
 app.get('/', (req, res) => res.json(currentCourses))
+
+// OAuth2
+app.get('/auth', (req, res) => {
+	res.redirect(
+		`https://canvas-dev.asu.edu/login/oauth2/auth?client_id=${client_id}&response_type=code&redirect_uri=http://localhost:3000/oauth_callback&scope=/auth/userinfo`
+	)
+})
 
 // getEnrollments()
 // console.log(enrollments)
