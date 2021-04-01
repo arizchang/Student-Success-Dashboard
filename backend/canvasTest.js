@@ -7,6 +7,7 @@ async function getAllWeights() {
 	//Have a empty array to fill with urls for axios calls & to fill with weights names & percentages
 	let urls = []
 	let weights = []
+	let allWeights = []
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
 
@@ -29,16 +30,18 @@ async function getAllWeights() {
 				for(let j = 0; j < res[i].data.length; j++){
 					weights.push(res[i].data[j])
 				}
+				allWeights.push(weights)
+				weights = []
 			}
-			//console.log(weights)
-			return weights
+			//console.log(allWeights)
+			return allWeights
 		})
 	)
 	.catch((err) => console.log(err))
 }
 
-//Get current enrollment information
-async function getCurrentEnrollments(){
+//Get current course grades
+async function getCourseGrades(){
 	let enrollments = []
 	//Get all courses the student has ever enrolled into
 	const studentEnrolled = await getEnrollments() 
@@ -61,6 +64,7 @@ async function getAllUpcomingQuizzes(){
 	//Have a empty array to fill with urls for axios calls & to fill with quizzes names & descriptions
 	let urls = []
 	let quizzes = []
+	let allQuizzes = []
 	let date = new Date()
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
@@ -86,9 +90,11 @@ async function getAllUpcomingQuizzes(){
 						quizzes.push(res[i].data[j])
 					}
 				}
+				allQuizzes.push(quizzes)
+				quizzes = []
 			}
-			//console.log(quizzes)
-			return quizzes
+			//console.log(allQuizzes)
+			return allQuizzes
 		})
 	)
 	.catch((err) => console.log(err))
@@ -140,6 +146,7 @@ async function getAllAnnouncements() {
 	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
 	let urls = []
 	let announcements = []
+	let allAnnouncements = []
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
 
@@ -162,9 +169,11 @@ async function getAllAnnouncements() {
 				for(let j = 0; j < res[i].data.length; j++){
 					announcements.push(res[i].data[j])
 				}
+				allAnnouncements.push(announcements)
+				announcements = []
 			}
-			//console.log(announcements)
-			return announcements
+			//console.log(allAnnouncements)
+			return allAnnouncements
 		})
 	)
 	.catch((err) => console.log(err))
@@ -176,6 +185,7 @@ async function getAllUpcomingAssignments(){
 	//Have a empty array to fill with urls for axios calls & to fill with assignments names & descriptions
 	let urls = []
 	let assignments = []
+	let allAssignments = []
 	let date = new Date()
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
@@ -201,9 +211,11 @@ async function getAllUpcomingAssignments(){
 						assignments.push(res[i].data[j])
 					}
 				}
+				allAssignments.push(assignments)
+				assignments = []
 			}
-			//console.log(assignments)
-			return assignments
+			//console.log(allAssignments)
+			return allAssignments
 		})
 	)
 	.catch((err) => console.log(err))
@@ -463,7 +475,7 @@ function getTermYear(){
 }
 
 // getAllWeights()
-// getCurrentEnrollments()
+// getCourseGrades()
 // getAllUpcomingQuizzes()
 // getAllGrades()
 // getAllAnnouncements()
