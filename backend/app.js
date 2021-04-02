@@ -12,6 +12,7 @@ var allAnnouncements = []
 var calendarData = []
 var allAssignments = []
 var allWeights = []
+var allGrades = []
 
 //Function that returns the current term and year
 function getTermYear(){
@@ -271,6 +272,46 @@ async function getAllWeights() {
 	.catch((err) => console.log(err))
 }
 
+//Get all graded assignments from each class for a user
+async function getAllGrades() {
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
+	let urls = []
+	let grades = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses()
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i]['id'] + '/students/submissions?per_page=100').catch(() => {return undefined;}))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignment in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i <= courseID.length; i++){
+				if(res[i] === undefined){
+					grades.push("No Assignment Grades Available")
+					continue
+				}
+				for(let j = 0; j < res[i].data.length; j++){
+					if(res[i].data[j]['workflow_state'] === 'graded'){
+						grades.push(res[i].data[j])
+					}
+				}
+				allGrades.push(grades)
+				grades = []
+			}
+			//console.log(grades)
+			return grades
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 getCurrentCourses()
 getAllAnnouncements()
 getAllUpcomingAssignments()
@@ -278,6 +319,7 @@ getCurrentCalendarData()
 getAllUpcomingQuizzes()
 getCourseGrades()
 getAllWeights()
+getAllGrades() 
 
 // sending JSONs to server
 app.get('/api/courses', (req, res) => res.json(currentCourses))
@@ -285,8 +327,9 @@ app.get('/api/announcements', (req, res) => res.json(allAnnouncements))
 app.get('/api/assignments', (req, res) => res.json(allAssignments))
 app.get('/api/calendars', (req, res) => res.json(calendarData))
 app.get('/api/quizzes', (req, res) => res.json(allQuizzes))
-app.get('/api/grades', (req, res) => res.json(courseGrades))
+app.get('/api/coursegrades', (req, res) => res.json(courseGrades))
 app.get('/api/weights', (req, res) => res.json(allWeights))
+app.get('/api/assnquizgrades', (req, res) => res.json(allGrades))
 
 // setting port and starting server
 const PORT = process.env.PORT || 5000
