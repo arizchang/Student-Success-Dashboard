@@ -63,6 +63,7 @@ async function getCurrentCourses() {
 	let current = getTermYear()
 	let cur = []
 	const studentEnrolled = await getEnrollments() 
+	//Resets currentCourses at every method call
 	currentCourses = []
 	//Axios call
 	axios
@@ -169,6 +170,8 @@ async function getCurrentCalendarData() {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	//Set what the current term and year is to a object
 	const courses = await getCurrentCourses()
+	//Resets calendarData at every method call
+	calendarData = []
 
 	//Axios call
 	axios.get('https://asu.instructure.com/api/v1/courses?per_page=100').then((res) => {
@@ -229,6 +232,8 @@ async function getCourseGrades(){
 	const studentEnrolled = await getEnrollments() 
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
+	//Resets courseGrades at every method call
+	courseGrades = []
 	for(let i = 0; i < courseID.length; i++){
 		for(let j = 0; j < studentEnrolled.length; j++){
 			if(courseID[i]["id"] === studentEnrolled[j]["course_id"]){
