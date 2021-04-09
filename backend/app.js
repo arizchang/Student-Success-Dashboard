@@ -65,6 +65,8 @@ async function getCurrentCourses() {
 	let current = getTermYear()
 	let cur = []
 	const studentEnrolled = await getEnrollments() 
+	//Resets currentCourses at every method call
+	currentCourses = []
 	//Axios call
 	axios
 		return axios.get('https://asu.instructure.com/api/v1/courses?per_page=100')
@@ -82,6 +84,7 @@ async function getCurrentCourses() {
 							if (res.data[i]['course_code'].includes(current) == true) {
 								cur.push(res.data[i])
 								currentCourses.push(res.data[i])
+								break
 							}
 						}
 					}
@@ -204,12 +207,14 @@ async function getCurrentCalendarData() {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	//Set what the current term and year is to a object
 	const courses = await getCurrentCourses()
+	//Resets calendarData at every method call
+	calendarData = []
 
 	//Axios call
 	axios.get('https://asu.instructure.com/api/v1/courses?per_page=100').then((res) => {
 			//Loop through each class in canvas
 			for (var i = 0; i < res.data.length; i++) {
-				//If the class code matches with the year and term, push to new array
+				//If the class code matches with the courseid, push to new array
 				if (courses.some((courseid) => courseid['id'] == res.data[i]['id'])) {
 					if (res.data[i]['calendar'] !== undefined) {
 						calendarData.push(res.data[i]['calendar']['ics'])
@@ -299,6 +304,8 @@ async function getCourseGrades(){
 	const studentEnrolled = await getEnrollments() 
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
+	//Resets courseGrades at every method call
+	courseGrades = []
 	for(let i = 0; i < courseID.length; i++){
 		for(let j = 0; j < studentEnrolled.length; j++){
 			if(courseID[i]["id"] === studentEnrolled[j]["course_id"]){
