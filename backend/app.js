@@ -8,9 +8,11 @@ const app = express()
 var currentCourses = []
 var courseGrades = []
 var allQuizzes = []
+var allUpcomingQuizzes = []
 var allAnnouncements = []
 var calendarData = []
 var allAssignments = []
+var allUpcomingAssignments = []
 var allWeights = []
 var allGrades = []
 
@@ -90,6 +92,41 @@ async function getCurrentCourses() {
 		.catch((err) => console.log(err))
 }
 
+//Get all assignments from each class for a user
+async function getAllAssignments(){
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignments names & descriptions
+	let urls = []
+	let assignments = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses()
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i]['id'] + '/assignments?per_page=100').catch(() => {return undefined;}))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignments in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				if(res[i] === undefined){
+					continue
+				}
+				for(let j = 0; j < res[i].data.length; j++){
+					assignments.push(res[i].data[j])
+				}
+				allAssignments.push(assignments)
+				assignments = []
+			}
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 //Get all upcoming assignments from each class for a user
 async function getAllUpcomingAssignments(){
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -120,7 +157,7 @@ async function getAllUpcomingAssignments(){
 						assignments.push(res[i].data[j])
 					}
 				}
-				allAssignments.push(assignments)
+				allUpcomingAssignments.push(assignments)
 				assignments = []
 			}
 		})
@@ -183,6 +220,41 @@ async function getCurrentCalendarData() {
 		.catch((err) => console.log(err))
 }
 
+//Get all quizzes from each class for a user
+async function getAllQuizzes(){
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with quizzes names & descriptions
+	let urls = []
+	let quizzes = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses()
+
+	//Fill the array with urls to each course quizzes page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i]['id'] + '/quizzes?per_page=100').catch(() => {return undefined;}))
+	}
+
+	axios.all(
+		urls,
+	)
+	//Loop through each quizzes in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i <= courseID.length; i++){
+				if(res[i] === undefined){
+					continue
+				}
+				for(let j = 0; j < res[i].data.length; j++){
+					quizzes.push(res[i].data[j])
+				}
+				allQuizzes.push(quizzes)
+				quizzes = []
+			}
+		})
+	)
+	.catch((err) => console.log(err))
+}
+
 //Get all upcoming quizzes from each class for a user
 async function getAllUpcomingQuizzes(){
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -213,7 +285,7 @@ async function getAllUpcomingQuizzes(){
 						quizzes.push(res[i].data[j])
 					}
 				}
-				allQuizzes.push(quizzes)
+				allUpcomingQuizzes.push(quizzes)
 				quizzes = []
 			}
 		})
@@ -314,8 +386,10 @@ async function getAllGrades() {
 
 getCurrentCourses()
 getAllAnnouncements()
+getAllAssignments()
 getAllUpcomingAssignments()
 getCurrentCalendarData()
+getAllQuizzes()
 getAllUpcomingQuizzes()
 getCourseGrades()
 getAllWeights()
@@ -325,8 +399,10 @@ getAllGrades()
 app.get('/api/courses', (req, res) => res.json(currentCourses))
 app.get('/api/announcements', (req, res) => res.json(allAnnouncements))
 app.get('/api/assignments', (req, res) => res.json(allAssignments))
+app.get('/api/upcomingassignments', (req, res) => res.json(allUpcomingAssignments))
 app.get('/api/calendars', (req, res) => res.json(calendarData))
 app.get('/api/quizzes', (req, res) => res.json(allQuizzes))
+app.get('/api/upcommingquizzes', (req, res) => res.json(allUpcomingQuizzes))
 app.get('/api/coursegrades', (req, res) => res.json(courseGrades))
 app.get('/api/weights', (req, res) => res.json(allWeights))
 app.get('/api/assnquizgrades', (req, res) => res.json(allGrades))
