@@ -50,10 +50,10 @@ export class dueDate extends Component {
                   <div className="item_title">{courses[index].name}</div>
                   {item.map((assignment, idx) => assignment.description && (
                     <div className="item_con">
-                      <p style={{minWidth: "200px"}}>
+                      <p style={{minWidth: "200px", maxWidth: "200px"}}>
                         {/* HW - 1  */}
-                        Due:{assignment.due_at && new Date(assignment.due_at).toDateString()}
-                        {item.end_at && new Date(item.end_at).toDateString()}
+                        Due:{assignment.due_at && new Date(assignment.due_at).toDateString().trim()}
+                        {/* {item.end_at && new Date(item.end_at).toDateString()} */}
                       </p>
                       <div dangerouslySetInnerHTML = {{__html: assignment.description}}>
                       </div>

@@ -14,10 +14,11 @@ export class home extends Component {
   }
 
   componentDidMount() {
-    Promise.all([api.requestCourses(), api.requestGrades(),api.requestWeights()]).then((res) => {
+    Promise.all([api.requestCourses(), api.requestGrades(),api.requestWeights(),api.requestAssignments()]).then((res) => {
       let courses = res[0].data;
       let grades = res[1].data;
-      let weights = res[2].data
+      let weights = res[2].data;
+      let assignments = res[3].data;
 
       // courses 去重
       let arr = [];
@@ -31,7 +32,8 @@ export class home extends Component {
       // 将课程成绩和成绩比重添加至课程对象中
       courses.forEach((course,index) => {
         course.grades = grades[index].grades;
-        course.weights = weights[index]
+        course.weights = weights[index];
+        course.assignments = assignments[index];
       });
 
       this.setState({
