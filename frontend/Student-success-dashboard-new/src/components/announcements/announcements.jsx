@@ -6,35 +6,45 @@ export class announcements extends Component {
     super(props);
   }
   render() {
-    let { announcements } = this.props;
+    let { announcements, courseNames} = this.props;
     return (
       <div className="announcements">
         <div className="title">Announcements</div>
         <table border="1" cellSpacing="0">
           <thead>
             <tr>
-              <th>Class</th>
+              <th style={{"min-width": "100px"}}>Class</th>
               <th>Name</th>
-              <th>Topic</th>
-              <th>Post Date</th>
+              <th style={{"min-width": "250px"}}>Topic</th>
+              <th style={{"min-width": "150px"}}>Post Date</th>
               <th>Announcements</th>
             </tr>
           </thead>
           <tbody>
             {announcements &&
-              announcements.map((item) => (
-                <tr key={item.id}>
-                  <td >CSE</td>
-                  <td>{item.user_name}</td>
-                  <td>{item.title}</td>
-                  <td>{item.created_at}</td>
-                  <td >
-                    <div className="td" dangerouslySetInnerHTML = {{__html: item.message}}>
+              announcements.map((item,index) => {
 
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                if(item.length == 0 ) return null;
+
+                // 由于 announcements 太多，暂时限制显示 4 条，可去除
+                if(item.length > 4){
+                  item = item.slice(0,4)
+                }
+
+                return item.map((announcement,idx) => (
+                  <tr key={item.id}>
+                    {idx==0 ? <td rowSpan={item.length}>{courseNames[index]}</td> : '' }
+                    <td>{announcement.user_name}</td>
+                    <td>{announcement.title}</td>
+                    <td>{announcement.created_at && new Date(announcement.created_at).toDateString()}</td>
+                    <td style={{"max-width": "500px"}}>
+                      <div className="td" dangerouslySetInnerHTML = {{__html: announcement.message}}>
+  
+                      </div>
+                    </td>
+                  </tr>
+                ))
+              })}
             {/* <tr>
               <td rowSpan="2">CSE</td>
               <td>NaKamura</td>

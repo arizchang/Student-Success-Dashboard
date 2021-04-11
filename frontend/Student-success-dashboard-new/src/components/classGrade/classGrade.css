@@ -2,6 +2,9 @@
   background-color: #f2f2f2;
   font-size: 12px;
 }
+p{
+  margin: 0 !important;
+}
 
 .class_grade .title{
   height:40px;

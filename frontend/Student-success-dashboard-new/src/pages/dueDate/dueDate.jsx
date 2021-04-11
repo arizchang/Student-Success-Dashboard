@@ -11,15 +11,29 @@ export class dueDate extends Component {
   }
 
   componentDidMount() {
-    requestCourses().then((res) => {
+    Promise.all([requestCourses(), requestAssignments()]).then((res) => {
+      console.log(res);
+      let courses = res[0].data;
+      let assignments = res[1].data;
+
+      // courses 去重
+      let arr = [];
+      courses = courses.filter((course) => {
+        if (arr.includes(course.id)) return false;
+
+        arr.push(course.id);
+        return true;
+      });
+
       this.setState({
-        courses: res.data,
+        courses: courses,
+        assignments: assignments,
       });
     });
   }
 
   render() {
-    let { courses } = this.state;
+    let { courses, assignments } = this.state;
     return (
       <div className="dueDate">
         <div className="title">
@@ -27,19 +41,27 @@ export class dueDate extends Component {
           <span>Description</span>
         </div>
         <div className="content">
-          {courses &&
-            courses.map((item) => (
-              <div className="item"  key={item.id}>
-                <div className="item_title">{item.name}</div>
-                <div className="item_con">
-                  <p>HW - 1 Due: October 31 2020</p>
-                  <p>
-                    In this project, you will be writing a program that receives a string of characters via the UART,
-                    checks if this string is a palindrome, and then uses a print function to print either “Yes” or “No”.
-                  </p>
+          {assignments &&
+            assignments.map((item, index) => {
+              if (!item.length) return false;
+
+              return (
+                <div className="item" key={index}>
+                  <div className="item_title">{courses[index].name}</div>
+                  {item.map((assignment, idx) => assignment.description && (
+                    <div className="item_con">
+                      <p style={{minWidth: "200px"}}>
+                        {/* HW - 1  */}
+                        Due:{assignment.due_at && new Date(assignment.due_at).toDateString()}
+                        {item.end_at && new Date(item.end_at).toDateString()}
+                      </p>
+                      <div dangerouslySetInnerHTML = {{__html: assignment.description}}>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              </div>
-            ))}
+              );
+            })}
         </div>
       </div>
     );

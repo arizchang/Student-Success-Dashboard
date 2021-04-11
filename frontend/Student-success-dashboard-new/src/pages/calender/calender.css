@@ -24,3 +24,15 @@ table th,table td{
   height: 30px;
   background-color: skyblue;
 }
+
+.note_color {
+  background-color: skyblue;
+}
+
+
+.calendar td{
+  padding: 0 !important;
+}
+.calendar .num{
+  padding:  10px;
+}
