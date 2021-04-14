@@ -1,123 +1,158 @@
-import React, { Component } from 'react'
-import { Calendar,Table, Tag, Space  } from 'antd';
-import './calender.css'
-function getListData(value) {
-  let listData;
-  switch (value.date()) {
-    case 8:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-      ];
-      break;
-    case 10:
-      listData = [
-        { type: 'warning', content: 'This is warning event.' },
-        { type: 'success', content: 'This is usual event.' },
-        { type: 'error', content: 'This is error event.' },
-      ];
-      break;
-    case 15:
-      listData = [
-        { type: 'warning', content: 'This is warning event' },
-        { type: 'success', content: 'This is very long usual event。。....' },
-        { type: 'error', content: 'This is error event 1.' },
-        { type: 'error', content: 'This is error event 2.' },
-        { type: 'error', content: 'This is error event 3.' },
-        { type: 'error', content: 'This is error event 4.' },
-      ];
-      break;
-    default:
-  }
-  return listData || [];
-}
+import React, { Component } from "react";
+import { Calendar, Table, Tag, Space } from "antd";
+import { requestCourses, requestAssignments } from "../../api/api";
+import "./calender.css";
 
-function dateFullCellRender(value) {
-  var date = value._d.getDate();
-  const listData = getListData(value);
+// function getListData(value) {
+//   let listData;
+//   switch (value.date()) {
+//     case 8:
+//       listData = [
+//         { type: "warning", content: "This is warning event." },
+//         { type: "success", content: "This is usual event." },
+//       ];
+//       break;
+//     case 10:
+//       listData = [
+//         { type: "warning", content: "This is warning event." },
+//         { type: "success", content: "This is usual event." },
+//         { type: "error", content: "This is error event." },
+//       ];
+//       break;
+//     case 15:
+//       listData = [
+//         { type: "warning", content: "This is warning event" },
+//         { type: "success", content: "This is very long usual event。。...." },
+//         { type: "error", content: "This is error event 1." },
+//         { type: "error", content: "This is error event 2." },
+//         { type: "error", content: "This is error event 3." },
+//         { type: "error", content: "This is error event 4." },
+//       ];
+//       break;
+//     default:
+//   }
+//   return listData || [];
+// }
+
+function dateFullCellRender(value, assignmentDates) {
+  let date = value._d.getDate();
+  let nowTime = new Date(
+    value._d.getFullYear(),
+    value._d.getMonth(),
+    value._d.getDate()
+  ).getTime();
+
   return (
-    <div className="">
-      { date}
+    <div className={`num ${assignmentDates[nowTime] && "note_color"}`}>
+      {date}
     </div>
   );
 }
 
-function getMonthData(value) {
-  if (value.month() === 8) {
-    return 1394;
-  }
-}
-
-function monthCellRender(value) {
-  const num = getMonthData(value);
-  return num ? (
-    <div className="notes-month">
-      <section>{num}</section>
-      <span>Backlog number111</span>
-    </div>
-  ) : null;
-}
-
-
-const columns = [
-  {
-    title: 'Shape',
-    dataIndex: 'name',
-    key: 'name',
-    render: text => <div className={`color ${text}`}></div>,
-  },
-  {
-    title: 'Incoming Events 1',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Incoming Events 2',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Incoming Events 3',
-    key: 'tags',
-    dataIndex: 'tags',
-  }
-];
-
-const data = [
-  {
-    key: '1',
-    name: 'John Brown',
-    age: 32,
-    address: 'New York No. 1 Lake Park',
-    tags: ['nice', 'developer'],
-  },
-  {
-    key: '2',
-    name: 'Jim Green',
-    age: 42,
-    address: 'London No. 1 Lake Park',
-    tags: ['loser'],
-  },
-  {
-    key: '3',
-    name: 'Joe Black',
-    age: 32,
-    address: 'Sidney No. 1 Lake Park',
-    tags: ['cool', 'teacher'],
-  },
-];
-
 export class calender extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {};
+  }
+
+  componentDidMount() {
+    requestAssignments().then((res) => {
+      let assignments = [];
+      let assignmentDates = {};
+
+      res.data.forEach((assignment, idx) => {
+        if (assignment.length) {
+          assignment.forEach((item) => {
+            let date = new Date(item.due_at);
+            item.idx = idx;
+            item.date = date;
+            assignments.push(item);
+
+            let dayTime = new Date(
+              date.getFullYear(),
+              date.getMonth(),
+              date.getDate()
+            ).getTime();
+
+            assignmentDates[dayTime] = assignmentDates[dayTime] || [];
+            assignmentDates[dayTime].push(item);
+          });
+        }
+      });
+
+      this.setState({
+        assignments: assignments,
+        assignmentDates: assignmentDates,
+      });
+    });
+  }
+
   render() {
+    let { assignmentDates } = this.state;
+    let date = new Date();
+    let startTime = new Date(date.getFullYear(), date.getMonth(), 1);
+    let endTime = new Date(date.getFullYear(), date.getMonth() + 1, -1);
+
+    // 提取本月数据
+    let newAssignmentDates = [];
+
+    for (const key in assignmentDates) {
+      if (key > startTime && key < endTime) {
+        assignmentDates[key].time = key;
+        newAssignmentDates.push(assignmentDates[key]);
+      }
+    }
+
+    // 获取日最大数据量
+    let dayAssignmentNum = 0;
+    for (const assignmentArr of newAssignmentDates) {
+      if (assignmentArr.length > dayAssignmentNum) {
+        dayAssignmentNum = assignmentArr.length;
+      }
+    }
+
+    console.log(newAssignmentDates, dayAssignmentNum);
+
     return (
       <div>
-        <Calendar dateFullCellRender={dateFullCellRender} monthCellRender={monthCellRender} />
+        <div className="calendar">
+          {this.state.assignments && (
+            <Calendar
+              dateFullCellRender={(value) =>
+                dateFullCellRender(value, this.state.assignmentDates)
+              }
+              headerRender={() => null}
+            />
+          )}
+        </div>
         <div className="color_note">
-          <Table columns={columns} dataSource={data} pagination={false} />
+          {dayAssignmentNum && (
+            <table>
+              <thead>
+                <tr>
+                  <th>time</th>
+                  {new Array(dayAssignmentNum).fill(1).map((v, i) => (
+                    <th key={i}>assignment {i}</th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody>
+                {newAssignmentDates.map((assignmentArr) => (
+                  <tr>
+                    <td>{new Date(Number(assignmentArr.time)).toDateString()}</td>
+                    {
+                      new Array(dayAssignmentNum).fill(1).map((v, i) => <td key={i}>{assignmentArr[i] && assignmentArr[i].name}</td>)
+                    }
+                    {/* {assignmentArr.map((assignment,idx) => <td key={idx}>{assignment.name}</td>)} */}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
         </div>
       </div>
-    )
+    );
   }
 }
 
-export default calender
+export default calender;
