@@ -405,7 +405,6 @@ getAllQuizzes()
 getAllUpcomingQuizzes()
 getCourseGrades()
 getAllWeights()
-getAllGrades() 
 
 // sending JSONs to server
 app.get('/api/courses', (req, res) => res.json(currentCourses))

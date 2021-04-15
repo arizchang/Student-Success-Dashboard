@@ -15,6 +15,8 @@ export const requestAnnouncements=() =>http.get('/api/announcements');
 
 export const requestAssignments = ()=>http.get('/api/assignments');
 
+export const requestUpcomingAssignments = ()=>http.get('/api/upcomingassignments');
+
 export const requestCalendars = ()=>http.get('/api/calendars')
 
 // export const requestGrades = ()=>http.get('/api/grades')
