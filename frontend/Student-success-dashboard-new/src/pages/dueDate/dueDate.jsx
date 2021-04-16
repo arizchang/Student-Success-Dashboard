@@ -16,7 +16,7 @@ export class dueDate extends Component {
       let courses = res[0].data;
       let assignments = res[1].data;
 
-      // delete courses repeat
+      // courses 去重
       let arr = [];
       courses = courses.filter((course) => {
         if (arr.includes(course.id)) return false;

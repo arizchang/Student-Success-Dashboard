@@ -26,7 +26,7 @@ export class announcements extends Component {
 
                 if(item.length == 0 ) return null;
 
-                // 由于 announcements 太多，暂时限制显示 4 条，可去除
+  
                 if(item.length > 4){
                   item = item.slice(0,4)
                 }

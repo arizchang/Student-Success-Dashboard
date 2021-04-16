@@ -93,7 +93,7 @@ export class calender extends Component {
     let startTime = new Date(date.getFullYear(), date.getMonth(), 1);
     let endTime = new Date(date.getFullYear(), date.getMonth() + 1, -1);
 
-    // get monthly data
+    // 提取本月数据
     let newAssignmentDates = [];
 
     for (const key in assignmentDates) {
@@ -103,7 +103,7 @@ export class calender extends Component {
       }
     }
 
-    // get the largest data everyday
+    // 获取日最大数据量
     let dayAssignmentNum = 0;
     for (const assignmentArr of newAssignmentDates) {
       if (assignmentArr.length > dayAssignmentNum) {
