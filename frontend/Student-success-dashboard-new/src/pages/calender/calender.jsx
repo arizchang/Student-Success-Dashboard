@@ -141,7 +141,7 @@ export class calender extends Component {
                   <tr>
                     <td>{new Date(Number(assignmentArr.time)).toDateString()}</td>
                     {
-                      new Array(dayAssignmentNum).fill(1).map((v, i) => <td key={i}>{assignmentArr[i] && assignmentArr[i].name}</td>)
+                      new Array(dayAssignmentNum).fill(1).map((v, i) => <td key={i}>{assignmentArr[i] && assignmentURL(assignmentArr[i].course_id, assignmentArr[i].id, assignmentArr[i].name)}</td>)
                     }
                     {/* {assignmentArr.map((assignment,idx) => <td key={idx}>{assignment.name}</td>)} */}
                   </tr>
