@@ -1,6 +1,6 @@
 #Ignore node_modules
 #If package.json updates, do 'npm i' in backend
-/node_modules
+node_modules
 
 #Ignore dev tokens
 tokens.js

@@ -100,13 +100,14 @@ async function getAllUpcomingQuizzes(){
 	.catch((err) => console.log(err))
 }
 
-/*
+
 //Get all graded assignments from each class for a user
 async function getAllGrades() {
 	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
 	//Have a empty array to fill with urls for axios calls & to fill with assignment names & descriptions
 	let urls = []
 	let grades = []
+	let allGrades = []
 	//Get the course ID for each class the user is assigned to
 	const courseID = await getCurrentCourses()
 
@@ -131,14 +132,16 @@ async function getAllGrades() {
 						grades.push(res[i].data[j])
 					}
 				}
+				allGrades.push(grades)
+				grades = []
 			}
-			console.log(grades)
+			//console.log(grades)
 			return grades
 		})
 	)
 	.catch((err) => console.log(err))
 }
-*/
+
 
 //Get all announcements from each class for a user
 async function getAllAnnouncements() {

@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import "./dueDate.css";
-import { requestCourses, requestAssignments } from "../../api/api";
+import { requestCourses, requestUpcomingAssignments } from "../../api/api";
 
 export class dueDate extends Component {
   constructor(props) {
@@ -11,12 +11,12 @@ export class dueDate extends Component {
   }
 
   componentDidMount() {
-    Promise.all([requestCourses(), requestAssignments()]).then((res) => {
+    Promise.all([requestCourses(), requestUpcomingAssignments()]).then((res) => {
       console.log(res);
       let courses = res[0].data;
       let assignments = res[1].data;
 
-      // courses 去重
+      // delete courses repeat
       let arr = [];
       courses = courses.filter((course) => {
         if (arr.includes(course.id)) return false;
