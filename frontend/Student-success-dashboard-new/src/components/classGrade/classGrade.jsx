@@ -2,11 +2,6 @@ import React, { Component } from 'react'
 import './classGrade.css'
 
 export class classGrade extends Component {
-
-  constructor(props){
-    super(props);
-
-  }
   render() {
 
     let course = this.props.data;
@@ -18,7 +13,7 @@ export class classGrade extends Component {
     return (
       <div className="class_grade">
           <div className="title">
-            {course.name}
+          {courseURL(course.id, course.name)}
           </div>
           <div className="des">
             <div className="grade">
@@ -56,6 +51,11 @@ export class classGrade extends Component {
         </div>
     )
   }
+}
+
+function courseURL(courseID, courseName){
+  let url = "https://asu.instructure.com/courses/" + courseID;
+  return <a href = {url}>{courseName}</a>
 }
 
 export default classGrade

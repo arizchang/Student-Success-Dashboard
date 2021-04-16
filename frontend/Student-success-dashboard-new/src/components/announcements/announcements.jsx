@@ -2,9 +2,7 @@ import React, { Component } from "react";
 import "./announcements.css";
 
 export class announcements extends Component {
-  constructor(props) {
-    super(props);
-  }
+
   render() {
     let { announcements, courseNames} = this.props;
     return (
@@ -24,7 +22,7 @@ export class announcements extends Component {
             {announcements &&
               announcements.map((item,index) => {
 
-                if(item.length == 0 ) return null;
+                if(item.length === 0 ) return null;
 
   
                 if(item.length > 4){
@@ -33,9 +31,9 @@ export class announcements extends Component {
 
                 return item.map((announcement,idx) => (
                   <tr key={item.id}>
-                    {idx==0 ? <td rowSpan={item.length}>{courseNames[index]}</td> : '' }
+                    {idx===0 ? <td rowSpan={item.length}>{courseNames[index]}</td> : '' }
                     <td>{announcement.user_name}</td>
-                    <td>{announcement.title}</td>
+                    <td>{announcementURL(announcement.url, announcement.title)}</td>
                     <td>{announcement.created_at && new Date(announcement.created_at).toDateString()}</td>
                     <td style={{"max-width": "500px"}}>
                       <div className="td" dangerouslySetInnerHTML = {{__html: announcement.message}}>
@@ -70,6 +68,10 @@ export class announcements extends Component {
       </div>
     );
   }
+}
+
+function announcementURL(announcementURL, announcementName){
+  return <a href = {announcementURL}>{announcementName}</a>
 }
 
 export default announcements;

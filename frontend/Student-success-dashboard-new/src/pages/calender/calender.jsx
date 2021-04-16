@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import { Calendar, Table, Tag, Space } from "antd";
-import { requestCourses, requestAssignments } from "../../api/api";
+import { Calendar } from "antd";
+import {  requestAssignments } from "../../api/api";
 import "./calender.css";
 
 // function getListData(value) {
@@ -130,9 +130,9 @@ export class calender extends Component {
             <table>
               <thead>
                 <tr>
-                  <th>time</th>
+                  <th>Date</th>
                   {new Array(dayAssignmentNum).fill(1).map((v, i) => (
-                    <th key={i}>assignment {i}</th>
+                    <th key={i}>Assignment {i}</th>
                   ))}
                 </tr>
               </thead>
@@ -153,6 +153,11 @@ export class calender extends Component {
       </div>
     );
   }
+}
+
+function assignmentURL(courseID, assignmentID, assignmentName){
+  let url = "https://asu.instructure.com/courses/" + courseID + "/assignments/" + assignmentID;
+  return <a href = {url}>{assignmentName}</a>
 }
 
 export default calender;

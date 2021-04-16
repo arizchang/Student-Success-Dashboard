@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { HashRouter, Switch, Route, Redirect } from 'react-router-dom';
+import {  Switch, Route, Redirect } from 'react-router-dom';
 
 import home from '../pages/home/home';
 import dueDate from '../pages/dueDate/dueDate';

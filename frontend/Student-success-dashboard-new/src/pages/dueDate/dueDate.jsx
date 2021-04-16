@@ -50,10 +50,9 @@ export class dueDate extends Component {
                   <div className="item_title">{courses[index].name}</div>
                   {item.map((assignment, idx) => assignment.description && (
                     <div className="item_con">
-                      <p style={{minWidth: "200px", maxWidth: "200px"}}>
-                        {/* HW - 1  */}
-                        Due:{assignment.due_at && new Date(assignment.due_at).toDateString().trim()}
-                        {/* {item.end_at && new Date(item.end_at).toDateString()} */}
+                      <p style={{minWidth: "100px",maxWidth: "100px"}}>{assignmentURL(assignment.course_id, assignment.id, assignment.name)}</p>
+                      <p style={{minWidth: "150px", maxWidth: "150px"}}>
+                        Due: {localTime(assignment.due_at)}
                       </p>
                       <div dangerouslySetInnerHTML = {{__html: assignment.description}}>
                       </div>
@@ -66,6 +65,16 @@ export class dueDate extends Component {
       </div>
     );
   }
+}
+
+function localTime(dueDate){
+  let date = new Date(dueDate)
+  return date.toLocaleString()
+}
+
+function assignmentURL(courseID, assignmentID, assignmentName){
+  let url = "https://asu.instructure.com/courses/" + courseID + "/assignments/" + assignmentID;
+  return <a href = {url}>{assignmentName}</a>
 }
 
 export default dueDate;
