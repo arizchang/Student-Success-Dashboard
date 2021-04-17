@@ -56,13 +56,7 @@ export class home extends Component {
         {
           this.state.courses && this.state.courses.map(item=> <ClassGrade data={item} />)
         }
-
         <Announcements announcements={this.state.Announcements} courseNames = {this.state.courseNames} />
-
-        {/* <div className="GPA_group">
-          <div className="current">Current GPA: 2.0</div>
-          <div className="cumulative">Cumulative GPA: 3.2</div>
-        </div> */}
       </div>
     );
   }

@@ -518,7 +518,8 @@ async function getAllAssignments(){
 	)
 	.catch((err) => console.log(err))
 }
-getAllAssignments()
+
+//getAllAssignments()
 // getAllWeights()
 // getCourseGrades()
 // getAllUpcomingQuizzes()
@@ -531,7 +532,7 @@ getAllAssignments()
 // getCurrentCourses()
 // getCurrentCalendarData()
 // getCourses()
-// getAssignments("75138")
+ //getAssignments("75138")
 // getEnrollments()
 // getUser()
 // getAccount()

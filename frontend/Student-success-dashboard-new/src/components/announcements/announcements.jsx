@@ -43,26 +43,6 @@ export class announcements extends Component {
                   </tr>
                 ))
               })}
-            {/* <tr>
-              <td rowSpan="2">CSE</td>
-              <td>NaKamura</td>
-              <td>Exam2</td>
-              <td>Oct 20, 2020 at 4:07pm</td>
-              <td>This week we have Exam 2 on oct 20</td>
-            </tr> */}
-            {/* <tr>
-              <td>NaKamura</td>
-              <td>Exam2</td>
-              <td>Oct 20, 2020 at 4:07pm</td>
-              <td>This week we have Exam 2 on oct 20</td>
-            </tr>
-            <tr>
-              <td rowSpan="2">CSE</td>
-              <td>NaKamura</td>
-              <td>Exam2</td>
-              <td>Oct 20, 2020 at 4:07pm</td>
-              <td>This week we have Exam 2 on oct 20</td>
-            </tr> */}
           </tbody>
         </table>
       </div>

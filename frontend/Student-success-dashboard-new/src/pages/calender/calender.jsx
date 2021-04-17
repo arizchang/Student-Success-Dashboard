@@ -3,37 +3,6 @@ import { Calendar } from "antd";
 import {  requestAssignments } from "../../api/api";
 import "./calender.css";
 
-// function getListData(value) {
-//   let listData;
-//   switch (value.date()) {
-//     case 8:
-//       listData = [
-//         { type: "warning", content: "This is warning event." },
-//         { type: "success", content: "This is usual event." },
-//       ];
-//       break;
-//     case 10:
-//       listData = [
-//         { type: "warning", content: "This is warning event." },
-//         { type: "success", content: "This is usual event." },
-//         { type: "error", content: "This is error event." },
-//       ];
-//       break;
-//     case 15:
-//       listData = [
-//         { type: "warning", content: "This is warning event" },
-//         { type: "success", content: "This is very long usual event。。...." },
-//         { type: "error", content: "This is error event 1." },
-//         { type: "error", content: "This is error event 2." },
-//         { type: "error", content: "This is error event 3." },
-//         { type: "error", content: "This is error event 4." },
-//       ];
-//       break;
-//     default:
-//   }
-//   return listData || [];
-// }
-
 function dateFullCellRender(value, assignmentDates) {
   let date = value._d.getDate();
   let nowTime = new Date(
@@ -147,7 +116,6 @@ export class calender extends Component {
                     {
                       new Array(dayAssignmentNum).fill(1).map((v, i) => <td key={i}>{assignmentArr[i] && assignmentURL(assignmentArr[i].course_id, assignmentArr[i].id, assignmentArr[i].name)}</td>)
                     }
-                    {/* {assignmentArr.map((assignment,idx) => <td key={idx}>{assignment.name}</td>)} */}
                   </tr>
                 ))}
               </tbody>
