@@ -124,9 +124,15 @@ async function getAllAssignments(){
 				for(let j = 0; j < res[i].data.length; j++){
 					assignments.push(res[i].data[j])
 				}
-				allAssignments.push(assignments)
-				assignments = []
+				//allAssignments.push(assignments)
+				//assignments = []
 			}
+			//console.log(allAssignments)
+			assignments.sort(function(a, b) {
+				return (a.due_at < b.due_at) ? -1 : ((a.due_at > b.due_at) ? 1 : 0);
+			});
+			allAssignments.push(assignments)
+			//console.log(assignments)
 		})
 	)
 	.catch((err) => console.log(err))

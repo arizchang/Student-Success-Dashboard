@@ -394,7 +394,12 @@ function getAssignments(courseID) {
 				},
 			}
 		)
-		.then((res) => console.log(res.data))
+		.then((res) =>{
+			res.data.sort(function(a, b) {
+				return (a.due_at < b.due_at) ? -1 : ((a.due_at > b.due_at) ? 1 : 0);
+			});
+			console.log(res.data)
+		})
 		.catch((err) => console.log(err))
 }
 
@@ -474,6 +479,46 @@ function getTermYear(){
 	return termYear
 }
 
+//Get all assignments from each class for a user
+async function getAllAssignments(){
+	axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+	//Have a empty array to fill with urls for axios calls & to fill with assignments names & descriptions
+	let urls = []
+	let assignments = []
+	//Get the course ID for each class the user is assigned to
+	const courseID = await getCurrentCourses()
+
+	//Fill the array with urls to each course assignment page
+	for(let i = 0; i < courseID.length; i++){
+		urls.push(axios.get('https://asu.instructure.com/api/v1/courses/' + courseID[i]['id'] + '/assignments?per_page=100').catch(() => {return undefined;}))
+	}
+	
+	axios.all(
+		urls,
+	)
+	//Loop through each assignments in a specfied class in canvas
+	.then(
+		axios.spread((...res) =>{
+			for(let i = 0; i < courseID.length; i++){
+				if(res[i] === undefined){
+					continue
+				}
+				for(let j = 0; j < res[i].data.length; j++){
+					assignments.push(res[i].data[j])
+				}
+				//allAssignments.push(assignments)
+				//assignments = []
+			}
+			//console.log(allAssignments)
+			assignments.sort(function(a, b) {
+				return (a.due_at < b.due_at) ? -1 : ((a.due_at > b.due_at) ? 1 : 0);
+			});
+			console.log(assignments)
+		})
+	)
+	.catch((err) => console.log(err))
+}
+getAllAssignments()
 // getAllWeights()
 // getCourseGrades()
 // getAllUpcomingQuizzes()

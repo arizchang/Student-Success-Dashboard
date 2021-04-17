@@ -113,6 +113,10 @@ export class calender extends Component {
 
     console.log(newAssignmentDates, dayAssignmentNum);
 
+    newAssignmentDates.sort(function(a, b) {
+      return (a.time < b.time) ? -1 : ((a.time > b.time) ? 1 : 0);
+    });
+
     return (
       <div>
         <div className="calendar">
