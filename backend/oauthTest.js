@@ -9,7 +9,7 @@ const app = express()
 // OAuth2
 app.get('/auth', (req, res) => {
 	res.redirect(
-		`https://canvas-dev.asu.edu/login/oauth2/auth?client_id=${the_client_id}&response_type=code&redirect_uri=http://localhost:3000/oauth_callback&scope=/auth/userinfo`
+		`https://canvas-dev.asu.edu/login/oauth2/auth?client_id=${the_client_id}&response_type=code&redirect_uri=http://localhost:3000/oauth_callback&scope=/auth/userinfo url:GET|/api/v1/users/:user_id/history`
 	)
 })
 
@@ -26,7 +26,6 @@ app.get('/oauth_callback', ({ query: { code } }, res) => {
 		.post('https://canvas-dev.asu.edu/login/oauth2/token', body)
 		.then((res) => res.data.access_token)
 		.then((token) => {
-			// eslint-disable-next-line no-console
 			console.log('My token:', token)
 
 			res.redirect(`/?token=${token}`)
