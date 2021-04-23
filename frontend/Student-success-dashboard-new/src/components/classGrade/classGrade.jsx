@@ -21,8 +21,8 @@ export class classGrade extends Component {
               <b>Grade - {course.grades.current_grade}</b>
             </div>
             <div className="due_date">
-              <div className="due_title"><b>Upcoming Assignments</b></div>
-              <div className="due_time">{course.assignments.map(assignment => <p>{assignment.name}</p>)}</div>
+              <div className="due_title"><b>Due Dates</b></div>
+              <div className="due_time">{course.assignments.map(assignment => <p>{assignment.due_at && new Date(assignment.due_at).toDateString()} : {assignment.name}</p>)}</div>
             </div>
             <div className="group">
               <b>Group:</b><br />
