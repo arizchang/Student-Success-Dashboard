@@ -3,13 +3,14 @@ import './classGrade.css'
 
 export class classGrade extends Component {
   render() {
-
     let course = this.props.data;
+    
     let countWeight = 0;
     course.weights.forEach(weight =>{
       countWeight += weight.group_weight;
     })
-    console.log(course,11111)
+    
+
     return (
       <div className="class_grade">
           <div className="title">
@@ -20,8 +21,8 @@ export class classGrade extends Component {
               <b>Grade - {course.grades.current_grade}</b>
             </div>
             <div className="due_date">
-              <div className="due_title"><b>Due Dates</b></div>
-              <div className="due_time">{course.assignments[0].due_at && new Date(course.assignments[0].due_at).toDateString()} : {course.assignments[0].name}</div>
+              <div className="due_title"><b>Upcoming Assignments</b></div>
+              <div className="due_time">{course.assignments.map(assignment => <p>{assignment.name}</p>)}</div>
             </div>
             <div className="group">
               <b>Group:</b><br />

@@ -5,6 +5,7 @@ export class announcements extends Component {
 
   render() {
     let { announcements, courseNames} = this.props;
+    //console.log(courseNames)
     return (
       <div className="announcements">
         <div className="title">Announcements</div>
