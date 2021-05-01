@@ -21,3 +21,8 @@ The original scope of the project was only targeted towards students, but we lat
 
 ---  
 
+### Setup
+Packages used: Axios, Concurrently, Express, Nodemon React, Babel, Webpack
+- Run `npm i` in both: 
+- `\Student-Success-Dashboard\backend\` & `\Student-Success-Dashboard\frontend\Student-success-dashboard-new\` to install all dependencies
+- To run the web application, run `npm run dev` in `\Student-Success-Dashboard\backend\` directory
